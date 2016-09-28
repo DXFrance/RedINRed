@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
 var Schema = mongoose.Schema;
+autoIncrement.initialize(mongoose.connection);
+
 var redSchema = new mongoose.Schema({
   trust: Number,
   trust_context: String,
@@ -20,5 +23,7 @@ redSchema.pre('save', function(next){
   }
   next();
 });
+
+redSchema.plugin(autoIncrement.plugin, 'Red');
 
 module.exports = mongoose.model('Red', redSchema);

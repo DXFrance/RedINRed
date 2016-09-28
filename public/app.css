@@ -1,7 +1,6 @@
 body {
   margin: 0;
   font-family: 'Segoe UI';
-  overflow-y: hidden;
 }
 
 header {
@@ -35,7 +34,7 @@ header .title {
 }
 
 section {
-  height: calc(100vh - 105px);
+  height: calc(100vh - 125px);
   background-image: url('img/bg.png');
   position: relative;
 }

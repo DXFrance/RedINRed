@@ -11,7 +11,7 @@ var bodyParser = require('body-parser');
 var config = JSON.parse(fs.readFileSync('config.json'));
 
 var mongoose = require('mongoose');
-mongoose.connect(config.mongo);
+mongoose.connect(config.mongo_dev);
 
 var Red = require('./models/red');
 
@@ -25,7 +25,9 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 app.get('/', function(req, res) {
-  res.render('index');
+  Red.find().sort({_id:-1}).limit(3).exec(function(err, reds) {
+    res.render('index', {reds: reds});
+  });
 });
 
 app.post('/snap', function(req, res) {

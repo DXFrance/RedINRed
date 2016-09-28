@@ -18,7 +18,6 @@
     </div>
   </header>
   <section class="container-fluid">
-    <div class="space"></div>
     <div class="row">
       <div class="col-md-6 video-block">
         <div class="video-wrapper">
@@ -41,13 +40,16 @@
         </ul>
         <h2>Previous pictures</h2>
         <ul class="prev-stats">
-          <li><strong>Shot 1 : </strong>SGIARS index <strong>67</strong>% G: Male Color: Red</li>
-          <li><strong>Shot 2 : </strong>SGIARS index <strong>67</strong>% G: Male Color: Red</li>
-          <li><strong>Shot 3 : </strong>SGIARS index <strong>67</strong>% G: Male Color: Red</li>
+          <% for (var i = 0, len = reds.length; i < len; i++) { %>
+            <li><strong>Shot <%= reds[i]._id %> : </strong>SGIARS index <strong><%= Math.round(reds[i].trust * 100) %></strong>% Gender: <%= reds[i].gender %> Color: <%= reds[i].color %></li>
+          <% } %>
         </ul>
       </div>
     </div>
   </section>
+  <script type="text/javascript">
+    var last_id = <%= reds[0]._id %>;
+  </script>
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="bower_components/odometer/odometer.js"></script>
   <script type="text/javascript" src="shuffle.js"></script>

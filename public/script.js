@@ -6,6 +6,8 @@ $(document).ready(function() {
   var context = canvas.getContext('2d');
   var video = document.getElementById('video');
 
+  var last_snap = false;
+
   var snap = new Audio('/snap.wav');
   var resize = function() {
     $('.video-wrapper').css('height', $('.video-wrapper').width());
@@ -42,9 +44,15 @@ $(document).ready(function() {
       $('#loader').fadeIn();
       is_http = true;
       $.post('/snap', {snap: url_b64}, function(data){
+        if (last_snap) {
+          last_id++;
+          $('.prev-stats').prepend("<li><strong>Shot " + last_id + " : </strong>SGIARS index <strong>" + Math.round(last_snap.trust) + "</strong>% Gender: " + last_snap.gender + " Color: " + last_snap.color + "</li>");
+          $('.prev-stats li').last().remove();
+        }
+        last_snap = data;
         $('.stat-age').text(data.age);
-        $('.stat-trust').text(data.trust * 100);
-        $('.stat-happy').text(data.happy * 100);
+        $('.stat-trust').text(Math.round(data.trust * 100));
+        $('.stat-happy').text(Math.round(data.happy * 100));
         $('.stat-time-hours').text(getTime('h'));
         $('.stat-time-minutes').text(getTime('m'));
         $('.stat-gender').shuffleLetters({
