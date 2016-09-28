@@ -46,7 +46,7 @@ $(document).ready(function() {
       $.post('/snap', {snap: url_b64}, function(data){
         if (last_snap) {
           last_id++;
-          $('.prev-stats').prepend("<li><strong>Shot " + last_id + " : </strong>SGIARS index <strong>" + Math.round(last_snap.trust) + "</strong>% Gender: " + last_snap.gender + " Color: " + last_snap.color + "</li>");
+          $('.prev-stats').prepend("<li>Confidence <strong>" + Math.round(last_snap.trust * 100) + "</strong>% Gender: " + last_snap.gender + " Color: " + last_snap.color + "<br />" + last_snap.trust_context + "</li>");
           $('.prev-stats li').last().remove();
         }
         last_snap = data;
