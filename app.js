@@ -56,8 +56,8 @@ app.post('/snap', function(req, res) {
   });
 });
 
-server.listen(1337, function() {
-  console.log('Listening on port 1337...');
+server.listen(process.env.PORT || 1337, function() {
+  console.log('Listening on port' + process.env.PORT || 1337);
 });
 
 io.on('connection', function (socket) {
