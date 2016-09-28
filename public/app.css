@@ -114,7 +114,7 @@ section .display-block ul.stats, section .display-block ul.prev-stats {
 
 section .display-block ul.prev-stats li, section .display-block ul.stats li {
   font-size: 25px;
-  margin-bottom: 3px;
+  margin-bottom: 7px;
   font-weight: 100;
   position: relative;
 }
