@@ -1,0 +1,55 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RED is the new red</title>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="bower_components/odometer/themes/odometer-theme-default.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo"></div>
+      <div class="title">
+        <strong>RED</strong> is the new red
+      </div>
+      <div class="experiences">Microsoft experiences'16</div>
+    </div>
+  </header>
+  <section class="container-fluid">
+    <div class="space"></div>
+    <div class="row">
+      <div class="col-md-6 video-block">
+        <div class="video-wrapper">
+          <div id="loader"><div><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></div></div>
+          <div class="scott"></div>
+          <canvas id="canvas"></canvas>
+          <video id="video" autoplay></video>
+          <img src="/img/go.png" class="control">
+        </div>
+      </div>
+      <div class="col-md-6 display-block">
+        <h1>Last picture (<span class="stat-time-hours odometer"></span>:<span class="stat-time-minutes odometer"></span>) :</h1>
+        <ul class="stats">
+          <li>Scott Guthrie in a red shirt<span class="span-right"><strong class="stat-trust red-matters odometer"></strong>%</span></li>
+          <li>Was happy <span class="span-right"><span class="odometer stat-happy"></span>%</span></li>
+          <li>Gender : <span class="stat-gender"></span></li>
+          <li>Age : <span class="stat-age"></span></li>
+          <li>Main color : <span class="stat-color"></span></li>
+        </ul>
+        <h2>Previous pictures</h2>
+        <ul class="prev-stats">
+          <li><strong>Shot 1 : </strong>SGIARS index <strong>67</strong>% G: Male Color: Red</li>
+          <li><strong>Shot 2 : </strong>SGIARS index <strong>67</strong>% G: Male Color: Red</li>
+          <li><strong>Shot 3 : </strong>SGIARS index <strong>67</strong>% G: Male Color: Red</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="bower_components/odometer/odometer.js"></script>
+  <script type="text/javascript" src="shuffle.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+</body>
+</html>
