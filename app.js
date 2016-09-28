@@ -15,6 +15,11 @@ mongoose.connect(config.mongo);
 
 var Red = require('./models/red');
 
+var oxford = require('project-oxford');
+var client_emotion = new oxford.Client(config.oxford_emotion);
+var client_face = new oxford.Client(config.oxford_face);
+var client_vision = new oxford.Client(config.oxford_vision);
+
 app.use(bodyParser({limit: '5000mb'}));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -27,34 +32,27 @@ app.post('/snap', function(req, res) {
   console.log('NEW SNAP');
   var snap = req.body.snap.replace(/^data:image\/png;base64,/, "");
   var id = shortid.generate();
-  fs.writeFile("./public/photos/" + id + ".png", snap, 'base64', function() {
-    console.log('http://b6646032.ngrok.io/photos/' + id + '.png');
-    var api_emotion = request('POST', 'https://api.projectoxford.ai/emotion/v1.0/recognize', {
-        json: { url: 'https://sec.ch9.ms/ch9/b4c5/2da38755-aaee-4ab3-afbb-9ef60112b4c5/BTCScottGuthrie_512_ch9.jpg' },
-        headers: {
-            'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': '61b5012e969d43fca126a7f062e179d0'
-        }
+  var img_url = "./public/photos/" + id + ".png";
+  fs.writeFile(img_url, snap, 'base64', function() {
+    client_emotion.emotion.analyzeEmotion({
+      path: img_url
+    }).then(function (response) {
+      var happy = (typeof response[0]['scores']['happiness'] !== "undefined") ? response[0]['scores']['happiness'] : 0;
+      client_face.face.detect({
+          path: img_url,
+          analyzesAge: true,
+          analyzesGender: true
+      }).then(function (response) {
+          var age = (typeof response[0].faceAttributes.age !== "undefined") ? response[0].faceAttributes.age : 0;
+          var gender = (typeof response[0].faceAttributes.gender !== "undefined") ? response[0].faceAttributes.gender : "-";
+          client_vision.vision.analyzeImage({
+              path: img_url,
+              Description: true
+          }).then(function (response) {
+              console.log(response);
+          });
+      });
     });
-
-    var data_emotion = JSON.parse(api_emotion.getBody('utf8'))[0]['scores']['happiness'];
-
-    console.log(data_emotion);
-
-    var red = {
-      trust: 78,
-      gender: 'Male',
-      age: 24,
-      color: 'Blue',
-      happy: 20
-    };
-
-    res.json(red);
-
-    red.img = snap;
-
-    var new_red = new Red(red);
-    new_red.save();
   });
 });
 

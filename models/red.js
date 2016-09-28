@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var redSchema = new mongoose.Schema({
   trust: Number,
+  trust_context: String,
   happy: Number,
   gender: String,
   age: Number,

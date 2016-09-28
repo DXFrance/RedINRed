@@ -71,4 +71,5 @@ $(document).ready(function() {
       return ('0' + d.getMinutes()).slice(-2);
     }
   };
+
 });
