@@ -41,7 +41,7 @@
         <h2>Previous pictures</h2>
         <ul class="prev-stats">
           <% for (var i = 0, len = reds.length; i < len; i++) { %>
-            <li><strong>Shot <%= reds[i]._id %> : </strong>SGIARS index <strong><%= Math.round(reds[i].trust * 100) %></strong>% Gender: <%= reds[i].gender %> Color: <%= reds[i].color %></li>
+            <li><%= reds[i].trust_context %><br /><strong>Shot <%= reds[i]._id %> : </strong>Confiance index <strong><%= Math.round(reds[i].trust * 100) %></strong>% Gender: <%= reds[i].gender %> Color: <%= reds[i].color %></li>
           <% } %>
         </ul>
       </div>
