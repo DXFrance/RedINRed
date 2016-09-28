@@ -28,42 +28,39 @@ $(document).ready(function() {
     }
     if (!is_rec) {
       $('.scott').fadeOut();
+      $('.preview').fadeOut();
       $('.control').attr('src', '/img/rec.png');
       is_rec = true;
     } else {
-      context.drawImage(video, 0, 0, $('.video-wrapper').width(), $('.video-wrapper').height());
+      context.drawImage(video, -Math.abs((video.videoWidth - $('.video-wrapper').width()) / 2), -Math.abs((video.videoHeight - $('.video-wrapper').height()) / 2), video.videoWidth, video.videoHeight);
       //TODO To fix later (w/h)
       var url_b64 = canvas.toDataURL();
+      $('.preview').css('background-image', 'url("' + url_b64 + '")');
       is_http = true;
-      $('canvas').fadeIn();
-      if (confirm("Is this photo OK ?")) {
-        snap.play();
-        $('#loader').fadeIn();
-        is_http = false;
-        $.post('/snap', {snap: url_b64}, function(data){
-          $('.stat-age').text(data.age);
-          $('.stat-trust').text(data.trust * 100);
-          $('.stat-happy').text(data.happy * 100);
-          $('.stat-time-hours').text(getTime('h'));
-          $('.stat-time-minutes').text(getTime('m'));
-          $('.stat-gender').shuffleLetters({
-      			"text": data.gender
-      		});
-          $('.stat-color').shuffleLetters({
-            "text": data.color
-          });
-          $('.stat-context').shuffleLetters({
-            "text": data.trust_context
-          });
-          $('canvas').fadeOut();
-          $('.scott').fadeIn(function() {
-            $('#loader').fadeOut();
-          });
+      $('.preview').fadeIn();
+      snap.play();
+      $('#loader').fadeIn();
+      is_http = true;
+      $.post('/snap', {snap: url_b64}, function(data){
+        $('.stat-age').text(data.age);
+        $('.stat-trust').text(data.trust * 100);
+        $('.stat-happy').text(data.happy * 100);
+        $('.stat-time-hours').text(getTime('h'));
+        $('.stat-time-minutes').text(getTime('m'));
+        $('.stat-gender').shuffleLetters({
+    			"text": data.gender
+    		});
+        $('.stat-color').shuffleLetters({
+          "text": data.color
         });
-      } else {
+        $('.stat-context').shuffleLetters({
+          "text": data.trust_context
+        });
+        $('#loader').fadeOut();
+        $('.control').attr('src', '/img/go.png');
         is_http = false;
-        $('canvas').fadeOut();
-      }
+        is_rec = false;
+      });
     }
   });
 

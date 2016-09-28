@@ -37,34 +37,49 @@ app.post('/snap', function(req, res) {
     client_emotion.emotion.analyzeEmotion({
       path: img_url
     }).then(function (response) {
-      var happy = (typeof response[0]['scores']['happiness'] !== "undefined") ? response[0]['scores']['happiness'] : 0;
+      try {
+        var happy = response[0]['scores']['happiness'];
+      } catch (e) {
+        var happy = 0;
+      }
       client_face.face.detect({
           path: img_url,
           analyzesAge: true,
           analyzesGender: true
       }).then(function (response) {
-          var age = (typeof response[0].faceAttributes.age !== "undefined") ? response[0].faceAttributes.age : 0;
-          var gender = (typeof response[0].faceAttributes.gender !== "undefined") ? response[0].faceAttributes.gender : "-";
+          try {
+            var age = response[0].faceAttributes.age;
+            var gender = response[0].faceAttributes.gender;
+          } catch (e) {
+            var age = 0;
+            var gender = "-";
+          }
           client_vision.vision.analyzeImage({
               path: img_url,
               Description: true,
               Color: true
           }).then(function (response) {
-              var color = (typeof response.color.dominantColors[0] !== "undefined") ? response.color.dominantColors[0] : "-" ;
-              var trust = (typeof response.description.captions[0].confidence !== "undefined") ? response.description.captions[0].confidence : 0;
-              var trust_context = (typeof response.description.captions[0].text !== "undefined") ? response.description.captions[0].text : 0;
-              var red = {
-                trust: trust,
-                trust_context: trust_context,
-                gender: gender,
-                age: age,
-                color: color,
-                happy: happy
-              };
-              res.json(red);
-              red.img = img_url;
-              var new_red = new Red(red);
-              new_red.save();
+            try {
+              var color = response.color.dominantColors[0];
+              var trust = response.description.captions[0].confidence;
+              var trust_context = response.description.captions[0].text;
+            } catch (e) {
+              var color = "-";
+              var trust = 0;
+              var trust_context = 0;
+            }
+            var red = {
+              trust: trust,
+              trust_context: trust_context,
+              gender: gender,
+              age: age,
+              color: color,
+              happy: happy
+            };
+            res.json(red);
+            red.img = img_url;
+            var new_red = new Red(red);
+            new_red.save();
           });
       });
     });
