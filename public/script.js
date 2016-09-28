@@ -39,7 +39,7 @@ $(document).ready(function() {
       if (confirm("Is this photo OK ?")) {
         snap.play();
         $('#loader').fadeIn();
-        $.post('http://localhost:1337/snap', {snap: url_b64}, function(data){
+        $.post('/snap', {snap: url_b64}, function(data){
           $('.stat-age').text(data.age);
           $('.stat-trust').text(data.trust * 100);
           $('.stat-happy').text(data.happy * 100);
