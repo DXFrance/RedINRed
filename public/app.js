@@ -41,8 +41,8 @@ $(document).ready(function() {
         $('#loader').fadeIn();
         $.post('http://localhost:1337/snap', {snap: url_b64}, function(data){
           $('.stat-age').text(data.age);
-          $('.stat-trust').text(data.trust);
-          $('.stat-happy').text(data.happy);
+          $('.stat-trust').text(data.trust * 100);
+          $('.stat-happy').text(data.happy * 100);
           $('.stat-time-hours').text(getTime('h'));
           $('.stat-time-minutes').text(getTime('m'));
           $('.stat-gender').shuffleLetters({
@@ -50,6 +50,9 @@ $(document).ready(function() {
       		});
           $('.stat-color').shuffleLetters({
             "text": data.color
+          });
+          $('.stat-context').shuffleLetters({
+            "text": data.trust_context
           });
           $('canvas').fadeOut();
           $('.scott').fadeIn(function() {
@@ -71,5 +74,8 @@ $(document).ready(function() {
       return ('0' + d.getMinutes()).slice(-2);
     }
   };
+
+  $('.stat-time-hours').text(getTime('h'));
+  $('.stat-time-minutes').text(getTime('m'));
 
 });

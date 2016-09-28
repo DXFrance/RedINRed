@@ -47,9 +47,24 @@ app.post('/snap', function(req, res) {
           var gender = (typeof response[0].faceAttributes.gender !== "undefined") ? response[0].faceAttributes.gender : "-";
           client_vision.vision.analyzeImage({
               path: img_url,
-              Description: true
+              Description: true,
+              Color: true
           }).then(function (response) {
-              console.log(response);
+              var color = (typeof response.color.dominantColors[0] !== "undefined") ? response.color.dominantColors[0] : "-" ;
+              var trust = (typeof response.description.captions[0].confidence !== "undefined") ? response.description.captions[0].confidence : 0;
+              var trust_context = (typeof response.description.captions[0].text !== "undefined") ? response.description.captions[0].text : 0;
+              var red = {
+                trust: trust,
+                trust_context: trust_context,
+                gender: gender,
+                age: age,
+                color: color,
+                happy: happy
+              };
+              res.json(red);
+              red.img = img_url;
+              var new_red = new Red(red);
+              new_red.save();
           });
       });
     });
