@@ -48,7 +48,11 @@
     </div>
   </section>
   <script type="text/javascript">
-    var last_id = <%= reds[0]._id %>;
+    <% if(reds.length) { %>
+      var last_id = <%= reds[0]._id %>;
+    <% } else { %>
+      var last_id = 0;
+    <% } %>
   </script>
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="bower_components/odometer/odometer.js"></script>

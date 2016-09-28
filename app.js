@@ -11,7 +11,7 @@ var bodyParser = require('body-parser');
 var config = JSON.parse(fs.readFileSync('config.json'));
 
 var mongoose = require('mongoose');
-mongoose.connect(config.mongo_dev);
+mongoose.connect(config.mongo);
 
 var Red = require('./models/red');
 
