@@ -45,11 +45,11 @@ $(document).ready(function() {
       is_http = true;
       $.post('/snap', {snap: url_b64}, function(data){
         if (last_snap) {
-          last_id++;
           $('.prev-stats').prepend("<li>Confidence <strong>" + Math.round(last_snap.trust * 100) + "</strong>% Gender: " + last_snap.gender + " Color: " + last_snap.color + "<br />" + last_snap.trust_context + "</li>");
           $('.prev-stats li').last().remove();
         }
         last_snap = data;
+        $('.display-block-wrapper').fadeIn();
         $('.stat-age').text(data.age);
         $('.stat-trust').text(Math.round(data.trust * 100));
         $('.stat-happy').text(Math.round(data.happy * 100));
@@ -64,7 +64,10 @@ $(document).ready(function() {
         $('.stat-context').shuffleLetters({
           "text": data.trust_context
         });
+        $('.display-left img').attr('src', data.img.replace('./public', ''));
         $('#loader').fadeOut();
+        $('.preview').fadeOut();
+        $('.scott').fadeIn();
         $('.control').attr('src', '/img/go.png');
         is_http = false;
         is_rec = false;

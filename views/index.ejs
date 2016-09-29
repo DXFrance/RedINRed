@@ -25,23 +25,32 @@
           <div class="scott"></div>
           <canvas id="canvas"></canvas>
           <div class="preview"></div>
-          <video id="video" autoplay></video>
+          <div class="web-cam">
+            <video id="video" autoplay></video>
+          </div>
           <img src="/img/go.png" class="control">
         </div>
       </div>
       <div class="col-md-6 display-block">
-        <h1>Last picture (<span class="stat-time-hours odometer"></span>:<span class="stat-time-minutes odometer"></span>) :</h1>
-        <ul class="stats">
-          <li><span class="stat-context">-</span><span class="span-right"><strong class="stat-trust red-matters odometer">0</strong>%</span></li>
-          <li>Was happy <span class="span-right"><span class="odometer stat-happy">0</span>%</span></li>
-          <li>Gender : <span class="stat-gender">-</span></li>
-          <li>Age : <span class="stat-age">0</span></li>
-          <li>Main color : <span class="stat-color">-</span></li>
-        </ul>
+        <div class="row display-block-wrapper" <% if(!last){ %>style="display: none;"<% } %>>
+          <div class="display-left">
+            <img src="<%= ((last) ? last.img.replace('./public', '') : '/img/scott.png') %>">
+          </div>
+          <div class="display-right">
+            <h1>Last picture (<span class="stat-time-hours odometer"></span>:<span class="stat-time-minutes odometer"></span>) :</h1>
+            <ul class="stats">
+              <li><span class="stat-context"><%= ((last) ? last.trust_context : "-" ) %></span><span class="span-right"><strong class="stat-trust red-matters odometer"><%= ((last) ? Math.round(last.trust * 100) : 0) %></strong>%</span></li>
+              <li>Was happy <span class="span-right"><span class="odometer stat-happy"><%= ((last) ? Math.round(last.happy * 100) : 0) %></span>%</span></li>
+              <li>Gender : <span class="stat-gender"><%= ((last) ? last.gender : "-" ) %></span></li>
+              <li>Age : <span class="stat-age"><%= ((last) ? Math.round(last.age) : 0) %></span></li>
+              <li>Main color : <span class="stat-color"><%= ((last) ? last.color : "-" ) %></span></li>
+            </ul>
+          </div>
+        </div>
         <h2>Previous pictures</h2>
         <ul class="prev-stats">
           <% for (var i = 0, len = reds.length; i < len; i++) { %>
-            <li>Confidence <strong><%= Math.round(reds[i].trust * 100) %></strong>% Gender: <%= reds[i].gender %> Color: <%= reds[i].color %>
+            <li><a href="<%= reds[i].img.replace('./public', '') %>" target="_blank"><img src="<%= reds[i].img.replace('./public', '') %>"></a>Confidence <strong><%= Math.round(reds[i].trust * 100) %></strong>% Gender: <%= reds[i].gender %> Color: <%= reds[i].color %>
             <br /><%= reds[i].trust_context %></li>
           <% } %>
         </ul>
@@ -49,11 +58,7 @@
     </div>
   </section>
   <script type="text/javascript">
-    <% if(reds.length) { %>
-      var last_id = <%= reds[0]._id %>;
-    <% } else { %>
-      var last_id = 0;
-    <% } %>
+    var redis = <%= last %>
   </script>
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="bower_components/odometer/odometer.js"></script>

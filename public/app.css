@@ -1,6 +1,7 @@
 body {
   margin: 0;
   font-family: 'Segoe UI';
+  background-image: url('img/bg.png');
 }
 
 header {
@@ -35,7 +36,6 @@ header .title {
 
 section {
   height: calc(100vh - 125px);
-  background-image: url('img/bg.png');
   position: relative;
 }
 
@@ -142,7 +142,13 @@ section .display-block ul.prev-stats {
   color: black;
 }
 
-
+section .display-block ul.prev-stats img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
 
 .clear {
   clear: both;
@@ -177,4 +183,32 @@ section .display-block ul.prev-stats {
   border-radius: 50%;
   z-index: 5;
   display: none;
+}
+
+.web-cam {
+  width: 100%;
+  height: 100%;
+}
+
+.display-block-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.display-right {
+  float: right;
+  width: 80%;
+  padding-left: 20px;
+}
+
+.display-left img {
+  position: relative;
+  top: 70px;
+  width: 100%;
+  border-radius: 50%;
+}
+
+.display-left {
+  float: left;
+  width: 20%;
 }

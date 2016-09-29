@@ -3,6 +3,9 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+var _redis = require("redis");
+var redis =  _redis.createClient(6380,'scottxp.redis.cache.windows.net', {auth_pass: 'lb+ZIPN9qbZtoRWjhIM/O8/RX0Bykhp2QwiT34bMYBY=', tls: {servername: 'scottxp.redis.cache.windows.net'}});
+
 var fs = require('fs');
 var request = require('sync-request');
 var shortid = require('shortid');
@@ -25,8 +28,10 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 app.get('/', function(req, res) {
-  Red.find().sort({_id:-1}).limit(3).exec(function(err, reds) {
-    res.render('index', {reds: reds});
+  redis.get("red", function(err, last) {
+      Red.find().sort({_id:-1}).limit(3).exec(function(err, reds) {
+        res.render('index', {reds: reds, last: ((last) ? JSON.parse(last) : null)});
+      });
   });
 });
 
@@ -76,12 +81,14 @@ app.post('/snap', function(req, res) {
               gender: gender,
               age: age,
               color: color,
-              happy: happy
+              happy: happy,
+              img: img_url
             };
             res.json(red);
-            red.img = img_url;
             var new_red = new Red(red);
             new_red.save();
+
+            redis.set("red", JSON.stringify(red), redis.print);
           });
       });
     });
