@@ -11,17 +11,33 @@ var request = require('sync-request');
 var shortid = require('shortid');
 var bodyParser = require('body-parser');
 
-var config = JSON.parse(fs.readFileSync('config.json'));
+var config_mongo, config_redis, config_oxford_emotion, config_oxford_face, config_oxford_vision;
+
+try {
+  console.log('Read settings from config.json')
+  var config = JSON.parse(fs.readFileSync('config.json'));
+  config_mongo = config.mongo;
+  config_redis = config.redis;
+  config_oxford_emotion = config.oxford_emotion;
+  config_oxford_face = config.oxford_face;
+  config_oxford_vision = config.oxford_vision;
+} catch (e) {
+   console.log('Read settings from env')
+   config_mongo = process.env.mongo;
+   config_redis = process.env.redis;
+   config_oxford_emotion = process.env.oxford_emotion;
+   config_oxford_face = process.env.oxford_face;
+   config_oxford_vision = process.env.oxford_vision;
+}
 
 var mongoose = require('mongoose');
-mongoose.connect(config.mongo);
+mongoose.connect(config_mongo);
 
 var Red = require('./models/red');
-
 var oxford = require('project-oxford');
-var client_emotion = new oxford.Client(config.oxford_emotion);
-var client_face = new oxford.Client(config.oxford_face);
-var client_vision = new oxford.Client(config.oxford_vision);
+var client_emotion = new oxford.Client(config_oxford_emotion);
+var client_face = new oxford.Client(config_oxford_face);
+var client_vision = new oxford.Client(config_oxford_vision);
 
 app.use(bodyParser({limit: '5000mb'}));
 app.set('view engine', 'ejs');
