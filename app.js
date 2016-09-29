@@ -1,7 +1,5 @@
 var express = require('express');
 var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
 
 var _redis = require("redis");
 var redis =  _redis.createClient(6380,'scottxp.redis.cache.windows.net', {auth_pass: 'lb+ZIPN9qbZtoRWjhIM/O8/RX0Bykhp2QwiT34bMYBY=', tls: {servername: 'scottxp.redis.cache.windows.net'}});
@@ -111,6 +109,6 @@ app.post('/snap', function(req, res) {
   });
 });
 
-server.listen(process.env.PORT || 1337, function() {
+app.listen(process.env.PORT || 1337, function() {
   console.log('Listening on port' + process.env.PORT || 1337);
 });
