@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var config_mongo;
 var config_redis = {};
 var config_oxford = {};
+var config_azure = {};
 
 try {
   console.log('Read settings from config.json')
@@ -24,6 +25,10 @@ try {
     vision: config.oxford_vision,
     emotion: config.oxford_emotion
   };
+  config_azure = {
+    id: config.azure_id,
+    key: config.azure_key
+  };
 } catch (e) {
    console.log('Read settings from env')
    config_mongo = process.env.mongo;
@@ -36,6 +41,10 @@ try {
      face: process.env.oxford_face,
      vision: process.env.oxford_vision,
      emotion: process.env.oxford_emotion
+   };
+   config_azure = {
+     id: process.env.azure_id,
+     key: process.env.azure_key
    };
 }
 
@@ -52,6 +61,12 @@ var client_emotion = new oxford.Client(config_oxford.emotion);
 var client_face = new oxford.Client(config_oxford.face);
 var client_vision = new oxford.Client(config_oxford.vision);
 
+var azure = require('azure-storage');
+var blobService = azure.createBlobService(config_azure.id, config_azure.key);
+blobService.createContainerIfNotExists('images', {
+  publicAccessLevel: 'blob'
+}, function(){});
+
 app.use(bodyParser({limit: '5000mb'}));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -66,12 +81,18 @@ app.get('/', function(req, res) {
 
 app.post('/snap', function(req, res) {
   console.log('NEW SNAP');
-  var snap = req.body.snap.replace(/^data:image\/png;base64,/, "");
+  var snap = req.body.snap;
   var id = shortid.generate();
-  var img_url = "./public/photos/" + id + ".png";
-  fs.writeFile(img_url, snap, 'base64', function() {
+
+  var rawdata = snap;
+  var matches = rawdata.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+  var type = matches[1];
+  var buffer = new Buffer(matches[2], 'base64');
+
+  blobService.createBlockBlobFromText('images', id + '.png', buffer, {contentType:type}, function(error, result, response) {
+    var img_url = AzureURL('images', id + '.png');
     client_emotion.emotion.analyzeEmotion({
-      path: img_url
+      url: img_url
     }).then(function (response) {
       try {
         var happy = response[0]['scores']['happiness'];
@@ -79,7 +100,7 @@ app.post('/snap', function(req, res) {
         var happy = 0;
       }
       client_face.face.detect({
-          path: img_url,
+          url: img_url,
           analyzesAge: true,
           analyzesGender: true
       }).then(function (response) {
@@ -91,7 +112,7 @@ app.post('/snap', function(req, res) {
             var gender = "-";
           }
           client_vision.vision.analyzeImage({
-              path: img_url,
+              url: img_url,
               Description: true,
               Color: true
           }).then(function (response) {
@@ -127,3 +148,21 @@ app.post('/snap', function(req, res) {
 app.listen(process.env.PORT || 1337, function() {
   console.log('Listening on port' + process.env.PORT || 1337);
 });
+
+var AzureURL = function(containerName, blobName) {
+  var startDate = new Date();
+  var expiryDate = new Date(startDate);
+  expiryDate.setMinutes(startDate.getMinutes() + 100);
+  startDate.setMinutes(startDate.getMinutes() - 100);
+
+  var sharedAccessPolicy = {
+    AccessPolicy: {
+      Permissions: azure.BlobUtilities.SharedAccessPermissions.READ,
+      Start: startDate,
+      Expiry: expiryDate
+    },
+  };
+
+  var token_azure = blobService.generateSharedAccessSignature(containerName, blobName, sharedAccessPolicy);
+  return blobService.getUrl(containerName, blobName, token_azure);
+};

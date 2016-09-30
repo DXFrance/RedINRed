@@ -45,7 +45,7 @@ $(document).ready(function() {
       is_http = true;
       $.post('/snap', {snap: url_b64}, function(data){
         if (last_snap) {
-          $('.prev-stats').prepend("<li>Confidence <strong>" + Math.round(last_snap.trust * 100) + "</strong>% Gender: " + last_snap.gender + " Color: " + last_snap.color + "<br />" + last_snap.trust_context + "</li>");
+          $('.prev-stats').prepend("<li><a href='" + last_snap.img.replace('./public', '') + "' target='_blank'><img src='" + last_snap.img.replace('./public', '') + "'></a>Confidence <strong>" + Math.round(last_snap.trust * 100) + "</strong>% Gender: " + last_snap.gender + " Color: " + last_snap.color + "<br />" + last_snap.trust_context + "</li>");
           $('.prev-stats li').last().remove();
         }
         last_snap = data;
