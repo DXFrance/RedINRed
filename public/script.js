@@ -11,8 +11,7 @@ $(document).ready(function() {
   var snap = new Audio('/snap.wav');
   var resize = function() {
     $('.video-wrapper').css('height', $('.video-wrapper').width());
-    canvas.width = $('.video-wrapper').width();
-    canvas.height = $('.video-wrapper').height();
+    $('.last-preview').css('height', $('.last-preview').width());
   };
   resize();
   $(window).on('resize', resize);
@@ -34,8 +33,9 @@ $(document).ready(function() {
       $('.control').attr('src', '/img/rec.png');
       is_rec = true;
     } else {
-      context.drawImage(video, -Math.abs((video.videoWidth - $('.video-wrapper').width()) / 2), -Math.abs((video.videoHeight - $('.video-wrapper').height()) / 2), video.videoWidth, video.videoHeight);
-      //TODO To fix later (w/h)
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
       var url_b64 = canvas.toDataURL();
       $('.preview').css('background-image', 'url("' + url_b64 + '")');
       is_http = true;
@@ -45,7 +45,7 @@ $(document).ready(function() {
       is_http = true;
       $.post('/snap', {snap: url_b64}, function(data){
         if (last_snap) {
-          $('.prev-stats').prepend("<li><a href='" + last_snap.img.replace('./public', '') + "' target='_blank'><img src='" + last_snap.img.replace('./public', '') + "'></a>Confidence <strong>" + Math.round(last_snap.trust * 100) + "</strong>% Gender: " + last_snap.gender + " Color: " + last_snap.color + "<br />" + last_snap.trust_context + "</li>");
+          $('.prev-stats').prepend("<li><a href='" + last_snap.img.replace('./public', '') + "' target='_blank'><div class='preview-tiny' style='background-image:url(" + last_snap.img.replace('./public', '') + ")'></a>Confidence <strong>" + Math.round(last_snap.trust * 100) + "</strong>% Gender: " + last_snap.gender + " Color: " + last_snap.color + "<br />" + last_snap.trust_context + "</li>");
           $('.prev-stats li').last().remove();
         }
         last_snap = data;
@@ -64,7 +64,8 @@ $(document).ready(function() {
         $('.stat-context').shuffleLetters({
           "text": data.trust_context
         });
-        $('.display-left img').attr('src', data.img.replace('./public', ''));
+        $('.last-preview').css('background-image', 'url("' + url_b64 + '")');
+        $('.last-preview').css('height', $('.last-preview').width());
         $('#loader').fadeOut();
         $('.preview').fadeOut();
         $('.scott').fadeIn();

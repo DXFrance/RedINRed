@@ -34,7 +34,7 @@
       <div class="col-md-6 display-block">
         <div class="row display-block-wrapper" <% if(!last){ %>style="display: none;"<% } %>>
           <div class="display-left">
-            <img src="<%= ((last) ? last.img.replace('./public', '') : '/img/scott.png') %>">
+            <div class="last-preview" style="background-image: url('<%= ((last) ? last.img : "" ) %>')"></div>
           </div>
           <div class="display-right">
             <h1>Last picture (<span class="stat-time-hours odometer"></span>:<span class="stat-time-minutes odometer"></span>) :</h1>
@@ -50,7 +50,7 @@
         <h2>Previous pictures</h2>
         <ul class="prev-stats">
           <% for (var i = 0, len = reds.length; i < len; i++) { %>
-            <li><a href="<%= reds[i].img.replace('./public', '') %>" target="_blank"><img src="<%= reds[i].img.replace('./public', '') %>"></a>Confidence <strong><%= Math.round(reds[i].trust * 100) %></strong>% Gender: <%= reds[i].gender %> Color: <%= reds[i].color %>
+            <li><a href="<%= reds[i].img.replace('./public', '') %>" target="_blank"><div class="preview-tiny" style="background-image: url(<%= reds[i].img.replace('./public', '') %>)"></div></a>Confidence <strong><%= Math.round(reds[i].trust * 100) %></strong>% Gender: <%= reds[i].gender %> Color: <%= reds[i].color %>
             <br /><%= reds[i].trust_context %></li>
           <% } %>
         </ul>
